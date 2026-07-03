@@ -133,6 +133,7 @@ export default function PokemonBuild() {
         <section>
           <h2 className="text-white font-bold text-xl mb-3">Tera Type</h2>
           <TeraTypeSelector
+            pokemon={pokemon}
             selectedTera={build.tera}
             onChange={(tera) => updateField('tera', tera)}
           />

@@ -1,5 +1,5 @@
-import { create } from 'zustand'
 import axios from 'axios'
+import { create } from 'zustand'
 
 const DEFAULT_BUILD = {
   moves:  [null, null, null, null],
@@ -11,8 +11,36 @@ const DEFAULT_BUILD = {
   ivs: { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 },
 }
 
-export const useTeamStore = create((set) => ({
-  team: [],
+export const useTeamStore = create((set, get) => ({
+  team:     [],
+  ruleset:  'default',   // 'default' | 'unlimited'
+
+  setRuleset: (ruleset) => set({ ruleset }),
+
+  // Ruleset validation helpers
+  canApplyMega: (pokemonId) => {
+    const { team, ruleset } = get()
+    if (ruleset === 'unlimited') return true
+    return !team.some(
+      (p) => p.id !== pokemonId && p.build?.form?.type === 'mega'
+    )
+  },
+
+  canApplyGmax: (pokemonId) => {
+    const { team, ruleset } = get()
+    if (ruleset === 'unlimited') return true
+    return !team.some(
+      (p) => p.id !== pokemonId && p.build?.form?.type === 'gmax'
+    )
+  },
+
+  canApplyTera: (pokemonId) => {
+    const { team, ruleset } = get()
+    if (ruleset === 'unlimited') return true
+    return !team.some(
+      (p) => p.id !== pokemonId && p.build?.tera !== null
+    )
+  },
 
   addPokemon: (pokemon) =>
     set((state) => ({
@@ -33,28 +61,26 @@ export const useTeamStore = create((set) => ({
       ),
     })),
 
-  randomizeTeam: async (allPokemon, queryClient) =>
-    {
-      const baseForms = allPokemon.filter((p) => p.formCategory === 'base')
-      const shuffled  = [...baseForms].sort(() => Math.random() - 0.5)
-      const picked    = shuffled.slice(0, 6)
-
-      // Fetch full pokemon data for each picked entry
-      const fullData = await Promise.all(
-        picked.map(async (entry) => {
-          const cached = queryClient.getQueryData(['pokemon', entry.name])
-          if (cached) return cached
-          const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${entry.fetchName}`)
-          const result = { ...data, name: entry.name, fetchName: entry.fetchName, formLabel: null, formCategory: 'base' }
-          queryClient.setQueryData(['pokemon', entry.name], result)
-          return result
-        })
-      )
-
-      set(() => ({
-        team: fullData.map((p) => ({ ...p, build: DEFAULT_BUILD })),
-      }))
-    },
-
   clearTeam: () => set({ team: [] }),
+
+  randomizeTeam: async (allPokemon, queryClient) => {
+    const baseForms = allPokemon.filter((p) => p.formCategory === 'base')
+    const shuffled  = [...baseForms].sort(() => Math.random() - 0.5)
+    const picked    = shuffled.slice(0, 6)
+
+    const fullData = await Promise.all(
+      picked.map(async (entry) => {
+        const cached = queryClient.getQueryData(['pokemon', entry.name])
+        if (cached) return cached
+        const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${entry.fetchName}`)
+        const result = { ...data, name: entry.name, fetchName: entry.fetchName, formLabel: null, formCategory: 'base' }
+        queryClient.setQueryData(['pokemon', entry.name], result)
+        return result
+      })
+    )
+
+    set(() => ({
+      team: fullData.map((p) => ({ ...p, build: DEFAULT_BUILD })),
+    }))
+  },
 }))

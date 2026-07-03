@@ -30,7 +30,8 @@ function StatBar({ statName, value }) {
 }
 
 export default function PokemonSidePanel({ pokemon }) {
-  const { data: species, isLoading } = usePokemonSpecies(pokemon?.id)
+  const speciesName = pokemon?.speciesName ?? pokemon?.name
+  const { data: species, isLoading } = usePokemonSpecies(speciesName)
   const { team, addPokemon, removePokemon } = useTeamStore()
 
   if (!pokemon) {

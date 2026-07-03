@@ -181,14 +181,14 @@ export function useAvailableForms(pokemonName, pokemonId) {
   return { available, isLoading }
 }
 
-export function usePokemonSpecies(pokemonId) {
+export function usePokemonSpecies(nameOrId) {
   return useQuery({
-    queryKey: ['pokemon-species', pokemonId],
+    queryKey: ['pokemon-species', nameOrId],
     queryFn: async () => {
-      const { data } = await axios.get(`${BASE}/pokemon-species/${pokemonId}`)
+      const { data } = await axios.get(`${BASE}/pokemon-species/${nameOrId}`)
       return data
     },
-    enabled: !!pokemonId,
+    enabled: !!nameOrId,
     staleTime: Infinity,
   })
 }
