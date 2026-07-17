@@ -152,7 +152,7 @@ export default function PokemonBuild() {
 
           {rayquazaMissingDragonAscent && (
             <div className="mb-3 bg-amber-900/40 border border-amber-700 rounded-xl p-3 text-amber-300 text-sm">
-              ⚠️ Rayquaza needs <strong>Dragon Ascent</strong> in its moveset to hold an item while Mega Evolved.
+              Rayquaza needs <strong>Dragon Ascent</strong> in its moveset to hold an item while Mega Evolved.
             </div>
           )}
 
@@ -176,7 +176,7 @@ export default function PokemonBuild() {
           <h2 className="text-white font-bold text-xl mb-3">Moves</h2>
           {isRayquaza && selectedForm && (
             <div className="mb-3 bg-purple-900/30 border border-purple-700 rounded-xl p-3 text-purple-300 text-sm">
-              💡 Add <strong>Dragon Ascent</strong> to allow Rayquaza to hold an item.
+              Add <strong>Dragon Ascent</strong> to allow Rayquaza to hold an item.
             </div>
           )}
           <MoveSelector
