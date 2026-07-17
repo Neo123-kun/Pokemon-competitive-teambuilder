@@ -8,7 +8,7 @@ import { useTeamStore } from "../store/teamStore";
 import { usePokemonList } from "../hooks/usePokemon";
 import { useQueryClient } from "@tanstack/react-query";
 import RulesetToggle from "../components/RulesetToggle";
-import TeamExportImport from '../components/TeamExportImport'
+import TeamExportImport from '../components/TeamSloteamExportImport'
 
 export default function TeamBuilder() {
   const { team, randomizeTeam, clearTeam } = useTeamStore();
