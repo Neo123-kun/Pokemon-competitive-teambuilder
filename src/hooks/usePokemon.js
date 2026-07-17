@@ -192,3 +192,16 @@ export function usePokemonSpecies(nameOrId) {
     staleTime: Infinity,
   })
 }
+
+export function usePokemonByName(name) {
+  return useQuery({
+    queryKey: ['pokemon', name],
+    queryFn: async () => {
+      const { data } = await axios.get(`${BASE}/pokemon/${name}`)
+      return { ...data, name }
+    },
+    enabled: !!name,
+    staleTime: Infinity,
+    retry: false,
+  })
+}

@@ -8,6 +8,7 @@ import { useTeamStore } from "../store/teamStore";
 import { usePokemonList } from "../hooks/usePokemon";
 import { useQueryClient } from "@tanstack/react-query";
 import RulesetToggle from "../components/RulesetToggle";
+import TeamExportImport from '../components/TeamExportImport'
 
 export default function TeamBuilder() {
   const { team, randomizeTeam, clearTeam } = useTeamStore();
@@ -17,6 +18,8 @@ export default function TeamBuilder() {
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [showRandomConfirm, setShowRandomConfirm] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  const [showExportImport, setShowExportImport] = useState(false)
 
   function handleRandomize() {
     if (team.length === 0) {
@@ -60,6 +63,13 @@ export default function TeamBuilder() {
               >
                 Randomize
               </button>
+              
+              <button
+                onClick={() => setShowExportImport(true)}
+                className="flex items-center gap-2 bg-gray-800 border border-gray-700 hover:border-gray-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-colors text-sm"
+              >
+                Export / Import
+              </button>
 
               {team.length > 0 && (
                 <button
@@ -78,6 +88,11 @@ export default function TeamBuilder() {
                   Analyse team →
                 </Link>
               )}
+
+              <TeamExportImport
+                isOpen={showExportImport}
+                onClose={() => setShowExportImport(false)}
+              />
             </div>
           </div>
         </div>
